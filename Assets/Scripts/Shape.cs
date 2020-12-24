@@ -11,9 +11,13 @@ public class Shape : MonoBehaviour
     private string shapeType;
     private float elapsedTime;
     private float rigidbodySleepTime = 1f;
+    private Vector3 spawnPosition;
+    private float returnSpeed = 5f;
+    private bool isReturning;
 
     private void Start()
     {
+        spawnPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         rb.Sleep();
@@ -45,6 +49,17 @@ public class Shape : MonoBehaviour
             if (touch.phase == TouchPhase.Ended)
             {
                 rb.velocity = Vector2.zero;
+                isReturning = true;
+            }
+        }
+        else if (isReturning)
+        {
+            float step = returnSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, spawnPosition, step);
+
+            if (Vector3.Distance(transform.position, spawnPosition) < 0.001f)
+            {
+                isReturning = false;
             }
         }
     }
